@@ -8,6 +8,17 @@ async function bootstrap() {
     .setTitle('Products Microservice')
     .setDescription('The Products API')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Authorization',
+        description: 'Coloque aqui seu token jwt',
+        in: 'header',
+      },
+      'Authorization', // This name here is important for matching up with @ApiBearerAuth() in your controller!
+    )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, documentFactory);

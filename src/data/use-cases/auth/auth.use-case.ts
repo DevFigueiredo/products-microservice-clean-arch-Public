@@ -13,7 +13,7 @@ export class AuthUseCase implements IAuthUseCase {
   async execute(data: IAuthUseCase.Input): Promise<IAuthUseCase.Output> {
     new AuthUseCaseValidator().validate(data);
     const respone = await this.htpClient.post<IAuthUseCase.Output>(
-      process.env.MICROSERVICE_LOGIN_URL,
+      `${process.env.MICROSERVICE_AUTH_URL}/login`,
       {
         email: data.email,
         password: data.password,

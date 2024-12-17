@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { BadGatewayException, Module } from '@nestjs/common';
 import { AuthUseCase } from '@src/data/use-cases/auth/auth.use-case';
 import { JwtTokenAdapter } from '@src/infra/adapters/token-adapter';
 import { AxiosHttpClient } from '@src/infra/adapters/axios-http-adapter';
@@ -18,7 +18,22 @@ import { GetProductsCase } from '@src/data/use-cases/products/get-products.use-c
     ProductsRepository,
     JwtTokenAdapter,
     PrismaDb,
-    AxiosHttpClient,
+    {
+      provide: AxiosHttpClient,
+      useFactory: () => {
+        const httpClient = new AxiosHttpClient();
+        httpClient.addResponseInterceptor(
+          (response: any) => {
+            return response;
+          },
+          (error) => {
+            console.error(error);
+            throw new BadGatewayException('External service http client error');
+          },
+        );
+        return httpClient;
+      },
+    },
     { provide: BCryptPassword, useValue: new BCryptPassword() },
     {
       provide: JwtTokenAdapter,
