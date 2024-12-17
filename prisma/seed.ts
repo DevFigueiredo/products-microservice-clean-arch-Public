@@ -7,8 +7,8 @@ const prisma = new PrismaClient({
 
 async function main(): Promise<void> {
   await prisma.$transaction(async (transaction) => {
-    await transaction.user.createMany({
-      data: await seeds.users(),
+    await transaction.product.createMany({
+      data: seeds.products,
     });
   });
 }

@@ -1,19 +1,24 @@
 import { Module } from '@nestjs/common';
 import { AuthUseCase } from '@src/data/use-cases/auth/auth.use-case';
 import { JwtTokenAdapter } from '@src/infra/adapters/token-adapter';
-import { AuthRepository } from '@src/infra/db/auth/auth.repository';
+import { AxiosHttpClient } from '@src/infra/adapters/axios-http-adapter';
 import { AuthController } from '@src/presentation/controllers/auth.controller';
 import { PrismaDb } from '../config/prisma/prisma-db.config';
 import { BCryptPassword } from '@src/utils/bcrypt-password.utils';
+import { ProductsRepository } from '@src/infra/db/products/products.repository';
+import { ProductsController } from '@src/presentation/controllers/products.controller';
+import { GetProductsCase } from '@src/data/use-cases/products/get-products.use-case';
 
 @Module({
   imports: [],
-  controllers: [AuthController],
+  controllers: [AuthController, ProductsController],
   providers: [
     AuthUseCase,
-    AuthRepository,
+    GetProductsCase,
+    ProductsRepository,
     JwtTokenAdapter,
     PrismaDb,
+    AxiosHttpClient,
     { provide: BCryptPassword, useValue: new BCryptPassword() },
     {
       provide: JwtTokenAdapter,
