@@ -1,4 +1,9 @@
-import { BadGatewayException, Module } from '@nestjs/common';
+import {
+  BadGatewayException,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { AuthUseCase } from '@src/data/use-cases/auth/auth.use-case';
 import { JwtTokenAdapter } from '@src/infra/adapters/token-adapter';
 import { AxiosHttpClient } from '@src/infra/adapters/axios-http-adapter';
@@ -8,6 +13,7 @@ import { BCryptPassword } from '@src/utils/bcrypt-password.utils';
 import { ProductsRepository } from '@src/infra/db/products/products.repository';
 import { ProductsController } from '@src/presentation/controllers/products.controller';
 import { GetProductsCase } from '@src/data/use-cases/products/get-products.use-case';
+import { LoggerMiddleware } from '@src/presentation/middlewares/logger.middleware';
 
 @Module({
   imports: [],
@@ -41,4 +47,8 @@ import { GetProductsCase } from '@src/data/use-cases/products/get-products.use-c
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*'); // Aplica o middleware para todas as rotas
+  }
+}
