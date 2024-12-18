@@ -14,6 +14,7 @@ import { WinstonInstrumentation } from '@opentelemetry/instrumentation-winston';
 import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { NestInstrumentation } from '@opentelemetry/instrumentation-nestjs-core';
 import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 
 const sdk = new NodeSDK({
   traceExporter: new OTLPTraceExporter({
@@ -37,10 +38,11 @@ const sdk = new NodeSDK({
   ],
   instrumentations: [
     new PrismaInstrumentation({ enabled: true }),
-    new NestInstrumentation(),
     new HttpInstrumentation(),
+    new NestInstrumentation(),
     new ExpressInstrumentation(),
     new WinstonInstrumentation(),
+    getNodeAutoInstrumentations(),
   ],
 });
 
